@@ -19,12 +19,22 @@ route.get("/", (req, res) => {
 
 route.post("/auth", async (req, res) => {
     if (req.body.email == '' || req.body.password == '') {
-
+        res.redirect("/")
     }
     else {
-        let check = await User.find({ email: req.body.email, password: req.body.password }).count()
-        req.session.email = req.body.email
-        res.redirect("/dashboard")
+        let check = await User.findOne({ email: req.body.email })
+        if (check) {
+            if (check.password == req.body.password) {
+                req.session.email = req.body.email
+                res.redirect("/dashboard")
+            }
+            else {
+                res.redirect("/")
+            }
+        }
+        else {
+            res.redirect("/")
+        }
     }
 })
 
