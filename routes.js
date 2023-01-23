@@ -19,7 +19,7 @@ route.get("/", (req, res) => {
 
 route.post("/auth", async (req, res) => {
     if (req.body.email == '' || req.body.password == '') {
-        res.redirect("/")
+        res.render("index", { "error": "All Fields Requireds" })
     }
     else {
         let check = await User.findOne({ email: req.body.email })

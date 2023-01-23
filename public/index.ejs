@@ -1,6 +1,5 @@
 <!DOCTYPE html>
 <html>
-
 <head>
     <meta charset="UTF-8">
     <title>Add New Student</title>
@@ -12,11 +11,18 @@
     <div class="container">
         <div class="row">
             <div class="col-lg-4"></div>
-            <div class="col-lg-4">
-                <div class="card mt-5">
+            <div class="col-lg-4 mt-5">
+                <%  if(typeof error != "undefined"){ %>
+                    <div class="alert alert-danger">
+                        <%= error %>
+                    </div>
+                <% } %> 
+                <div class="card">
+                    
                     <div class="card-header">
                         <b>Login</b>
                     </div>
+                    
                     <div class="card-body">
                         <form action="/auth" method="post">
                             <div class="mb-3">
