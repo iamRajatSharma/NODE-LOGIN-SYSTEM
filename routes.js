@@ -3,10 +3,29 @@ const route = express.Router()
 const User = require("./db/Users")
 const bodyParser = require("body-parser")
 const session = require("express-session")
-
+const Joi = require('joi')
 
 route.use(bodyParser.urlencoded({ extended: false }))
 route.use(bodyParser.json())
+
+function validateUser(user) {
+    const JoiSchema = Joi.object({
+
+        email: Joi.string()
+            .email()
+            .min(5)
+            .max(50)
+            .optional(),
+
+        password: Joi.string()
+            .min(5)
+            .max(50)
+            .trim(),
+
+    }).options({ abortEarly: false });
+
+    return JoiSchema.validate(user)
+}
 
 route.get("/", (req, res) => {
     if (req.session.email) {
@@ -18,9 +37,15 @@ route.get("/", (req, res) => {
 })
 
 route.post("/auth", async (req, res) => {
-    if (req.body.email == '' || req.body.password == '') {
-        res.render("index", { "error": "All Fields Requireds" })
+    const resp = validateUser(req.body)
+    if (resp) {
+        const errorMessage = resp.error.message.split(".")
+        console.log(errorMessage)
+        res.render("index", { "error": errorMessage })
     }
+    // if (req.body.email == '' || req.body.password == '') {
+    //     res.render("index", { "error": "All Fields Requireds" })
+    // }
     else {
         let check = await User.findOne({ email: req.body.email })
         if (check) {
