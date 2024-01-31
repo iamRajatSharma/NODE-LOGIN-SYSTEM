@@ -19,17 +19,14 @@ route.get("/", (req, res) => {
 
 route.post("/login", async (req, res) => {
 
-    // const myemail = req.body.email;
-    const myemail = "sharmarajat687@gmail.com";
-
-    if (myemail == '' || req.body.password == '') {
+    if (req.body.email == '' || req.body.password == '') {
         return res.render("index", { "error": "All Fields Requireds" })
     }
 
-    let check = await User.findOne({ email: myemail })
+    let check = await User.findOne({ email: req.body.email })
     if (check) {
         if (check.password == req.body.password) {
-            req.session.email = myemail
+            req.session.email = req.body.email
             return res.redirect("/dashboard")
         }
         else {
@@ -62,7 +59,8 @@ route.post("/register", async (req, res) => {
     }
 
     let check = await User.findOne({ email: req.body.email })
-    if (check.length == 0) {
+
+    if (check === null) {
         const userData = {
             name: req.body.name,
             password: req.body.password,
